@@ -5,8 +5,7 @@ var models = require('./models');
 orm.connect("sqlite://test.db", function (err, db) {
 	db.load("./models", function (err) {
 	    // loaded!
-	    var Person = db.models.person;
-	    var Pet    = db.models.pet;
+        var User = db.models.user;
 	});
 	db.sync()
 });
