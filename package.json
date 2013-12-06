@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-coursework",
+  "version": "0.1.0",
+  "author": "Nick, Richard, Tom",
+  "description": "COMP6017 Coursework",
+  "contributors": [ 
+    {
+      "name": "Nick Jones",
+      "email": "noj1g10@soton.ac.uk"
+    } 
+  ],
+  "dependencies" : {
+    "express"   :  "*",
+    "orm"       :  "*",
+    "sqlite3"   :  "*",
+    "bcrypt"    :  "*"
+  },
+  "scripts": {
+    "start": "node ./app.js"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  }
+}
