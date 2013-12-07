@@ -68,8 +68,8 @@ app.get('/users', function (req, res) {
         function (err, all_users) {
 
             if (!err) {
-                res.send(JSON.stringify(all_users));
-                res.status(200).send();
+                res.writeHead(200, {"Content-Type": "application/json"});
+                res.end(JSON.stringify(all_users));
             } else {
                 res.status(400).send("Not found");
             }
@@ -81,8 +81,8 @@ app.get('/users', function (req, res) {
 app.get('/users/:user_id', function (req, res) {
     req.models.user.get(req.params.user_id, function (err, user) {
         if (!err) {
-            res.send(JSON.stringify(user));
-            res.status(200).send();
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify(user));
         } else {
             res.status(404).send('Not found');
         }
@@ -113,8 +113,8 @@ app.put('/users/:user_id', function (req, res) {
 
                 user.save(function (err) {
                     if (!err) {
-                        res.send(user);
-                        res.status(200).send();
+                        res.writeHead(200, {"Content-Type": "application/json"});
+                        res.end(user);
                     } else {
                         //Assume it's because of bad syntax, could we try catch for specific errors?
                         res.status(400).send("Could not update user");
@@ -152,7 +152,8 @@ app.post("/users", function (req, res) {
             }, ],
             function (err, user_created) {
                 if (!err) {
-                    res.send(JSON.stringify(user_created));
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify(user_created));
                 } else {
                     res.status(500).send(err);
                 }
@@ -168,7 +169,6 @@ app.post("/users", function (req, res) {
 app.delete('/users/:user_id', function (req, res) {
     return req.models.user.find({id: req.params.user_id}).remove(function (err) {
         if (!err) {
-            console.log("removed");
             res.status(200).send("User destroyed");
         } else {
             res.status(404).send("Could not find user");
