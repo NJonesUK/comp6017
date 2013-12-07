@@ -23,7 +23,7 @@ type:'GET',
 $.ajax({
 	type:'POST',
 	url: 'http://localhost:8888/users',
-	data: 'firstname=richard&lastname=reading&email=rr15g10@ecs.soton.ac.uk&password=hello',
+	data: 'firstname=bbc&lastname=reading&email=rr15g10@ecs.soton.ac.uk&password=hello',
 	success: function(data){
 		console.log(data)	
 	}

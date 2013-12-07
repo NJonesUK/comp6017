@@ -13,7 +13,8 @@
     "express"   :  "*",
     "orm"       :  "*",
     "sqlite3"   :  "*",
-    "bcrypt"    :  "*"
+    "bcrypt"    :  "*",
+    "express-validator" : "*"
   },
   "scripts": {
     "start": "node ./app.js"
