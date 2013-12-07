@@ -1,0 +1,20 @@
+-user -> Richard
+-questions -> Richard
+-answers -> Richard
+-comments -> Tom
+
+
+-voting on questions & answers -> Nick
+-expose search for questions -> Tom
+-get user’s questions -> Richard
+
+-when returning a question, it should return the question, the answers associated without the question, and the comments associated with both questions & answers. -> Tom
+
+
+-initial db setup -> Nick
+-hashing of password -> Nick
+-authentication -> Nick
+-curl script for demonstration (we need to cover every route in our application) -> Nick
+
+-unit testing -> All unit test appropriate stuff.
+-documentation (20% total for documentation) -> All.

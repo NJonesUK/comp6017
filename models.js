@@ -19,6 +19,7 @@ module.exports = function (db, cb)
         {
             date_posted : Date,
             content     : String, 
+            title       : String,
         }, {
     });
     db.models.question.hasOne("owner", db.models.user, { reverse: 'questions' });
@@ -35,7 +36,7 @@ module.exports = function (db, cb)
 
     db.define("answer", 
         {
-            answer : String,
+            content : String,
             date_posted : Date,
 
         }, {

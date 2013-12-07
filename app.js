@@ -1,4 +1,5 @@
-/* jslint node: true */
+/* node: true, devel: true, sloppy:true, unparam: true, nomen: true */
+
 "use strict";
 
 var util = require('util');
@@ -9,13 +10,6 @@ var app = express();
 
 app.use(express.bodyParser());
 app.use(expressValidator()); // this line must be immediately after express.bodyParser()!
-
-
-// app.configure(function () {
-//     app.use(expressValidator);
-// });
-
-
 
 app.use(orm.express("sqlite://test.db",
     {
@@ -44,6 +38,24 @@ app.use(orm.express("sqlite://test.db",
                         }
                     },
                 });
+
+            models.question = db.define("question",
+                {
+                    date_posted : Date,
+                    content     : String,
+                    title       : String,
+                }, {
+                });
+
+            db.models.question.hasOne("owner", db.models.user, { reverse: 'questions' });
+
+            models.answer = db.define("answer",
+                {
+                    content : String,
+                    date_posted : Date,
+                }, {
+                });
+
         }
     }));
 
@@ -54,21 +66,24 @@ console.log("Server running at http://127.0.0.1:8888/");
 
 
 
+
+
+
+/*
+
+USER CODE
+
+*/
+
 //GET - index all users 
 app.get('/users', function (req, res) {
-    // req.models.user.count(function (err, count) {
-    //     if (!err) {
-    //         console.log(count + ' users');
-    //     }
-    // });
-
     req.models.user.find(
         {},
         {},
         function (err, all_users) {
 
             if (!err) {
-                res.writeHead(200, {"Content-Type": "application/json"});
+                res.setHeader('Content-Type', 'application/json');
                 res.end(JSON.stringify(all_users));
             } else {
                 res.status(400).send("Not found");
@@ -81,7 +96,8 @@ app.get('/users', function (req, res) {
 app.get('/users/:user_id', function (req, res) {
     req.models.user.get(req.params.user_id, function (err, user) {
         if (!err) {
-            res.writeHead(200, {"Content-Type": "application/json"});
+            // console.log(user.fullName());
+            res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify(user));
         } else {
             res.status(404).send('Not found');
@@ -99,7 +115,6 @@ app.put('/users/:user_id', function (req, res) {
     req.assert('email', 'An email address is required').notEmpty();
     req.assert('email', 'A valid email address is required').isEmail();
     req.assert('password', 'A password is required').notEmpty();
-    req.assert('firstname', 'First Name is a String').isString();
 
     var errors = req.validationErrors();
 
@@ -113,8 +128,8 @@ app.put('/users/:user_id', function (req, res) {
 
                 user.save(function (err) {
                     if (!err) {
-                        res.writeHead(200, {"Content-Type": "application/json"});
-                        res.end(user);
+                        res.setHeader('Content-Type', 'application/json');
+                        res.end(JSON.stringify(user));
                     } else {
                         //Assume it's because of bad syntax, could we try catch for specific errors?
                         res.status(400).send("Could not update user");
@@ -139,7 +154,6 @@ app.post("/users", function (req, res) {
     req.assert('email', 'An email address is required').notEmpty();
     req.assert('email', 'A valid email address is required').isEmail();
     req.assert('password', 'A password is required').notEmpty();
-    req.assert('firstname', 'First Name is a String').isString();
 
     var errors = req.validationErrors();
     if (!errors) {
@@ -150,10 +164,12 @@ app.post("/users", function (req, res) {
                 email: req.body.email,
                 password: req.body.password
             }, ],
+
             function (err, user_created) {
                 if (!err) {
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    res.end(JSON.stringify(user_created));
+                    var user = user_created[0];
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify(user));
                 } else {
                     res.status(500).send(err);
                 }
@@ -167,7 +183,7 @@ app.post("/users", function (req, res) {
 
 //DELETE - destroy User
 app.delete('/users/:user_id', function (req, res) {
-    return req.models.user.find({id: req.params.user_id}).remove(function (err) {
+    req.models.user.find({id: req.params.user_id}).remove(function (err) {
         if (!err) {
             res.status(200).send("User destroyed");
         } else {
@@ -177,6 +193,260 @@ app.delete('/users/:user_id', function (req, res) {
     });
 });
 
+
+
+
+
+/*
+
+QUESTION CODE
+
+*/
+
+
+//GET - index all questions 
+app.get('/questions', function (req, res) {
+    req.models.question.find(
+        {},
+        {},
+        function (err, all_questions) {
+            if (!err) {
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify(all_questions));
+            } else {
+                res.status(400).send(err);
+            }
+        }
+    );
+});
+
+
+//GET - show individual question
+app.get('/questions/:question_id', function (req, res) {
+    req.models.question.get(req.params.question_id, function (err, question) {
+        if (!err) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(question));
+        } else {
+            res.status(404).send('Not found');
+        }
+    });
+});
+
+
+//PUT updates question
+app.put('/questions/:question_id', function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+    req.assert('title', 'Title is required').notEmpty();
+    req.assert('title', 'Tile has to be between 10 and 50 chars').len(10, 50);
+
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        req.models.question.get(req.params.question_id, function (err, question) {
+            if (!err) {
+
+                //only update the title and content
+                question.title = req.body.title;
+                question.content = req.body.content;
+
+                question.save(function (err) {
+                    if (!err) {
+                        res.setHeader('Content-Type', 'application/json');
+                        res.end(JSON.stringify(question));
+                    } else {
+                        //Assume it's because of bad syntax, could we try catch for specific errors?
+                        res.status(400).send("Could not update question");
+                    }
+                });
+            } else {
+                res.status(404).send("question was not found");
+            }
+        });
+    } else {
+        res.status(400).send("Bad Syntax" + errors);
+    }
+
+});
+
+
+//POST - create new question
+app.post("/questions", function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+    req.assert('title', 'Title is required').notEmpty();
+    req.assert('title', 'Tile has to be between 10 and 50 chars').len(10, 50);
+
+    var datetime = new Date(),
+        errors = req.validationErrors();
+
+    if (!errors) {
+        req.models.question.create(
+            [{
+                date_posted: datetime,
+                title: req.body.title,
+                content: req.body.content,
+                owner_id: null
+            }, ],
+            function (err, question_created) {
+                if (!err) {
+                    var question = question_created[0];
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify(question));
+                } else {
+                    res.status(500).send(err);
+                }
+            }
+        );
+    } else {
+        res.status(400).send(errors);
+    }
+
+});
+
+
+
+//DELETE - destroy Question
+app.delete('/questions/:question_id', function (req, res) {
+    req.models.question.find({id: req.params.question_id}).remove(function (err) {
+        if (!err) {
+            res.status(200).send("Question destroyed");
+        } else {
+            res.status(404).send("Could not find user");
+        }
+    });
+});
+
+
+/*
+
+ANSWER CODE
+
+*/
+
+//GET - index all answers 
+app.get('/answers', function (req, res) {
+    req.models.answer.find(
+        {},
+        {},
+        function (err, all_answers) {
+            if (!err) {
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify(all_answers));
+            } else {
+                res.status(400).send(err);
+            }
+        }
+    );
+});
+
+
+//GET - show individual answer
+app.get('/answers/:answer_id', function (req, res) {
+    req.models.answer.get(req.params.answer_id, function (err, answer) {
+        if (!err) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(answer));
+        } else {
+            res.status(404).send('Not found');
+        }
+    });
+});
+
+
+//PUT updates answer
+app.put('/answers/:answer_id', function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+    // req.assert('title', 'Title is required').notEmpty();
+    // req.assert('title', 'Tile has to be between 10 and 50 chars').len(10, 50);
+
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        req.models.answer.get(req.params.answer_id, function (err, answer) {
+            if (!err) {
+
+                //only update the title and content
+                answer.content = req.body.content;
+
+                answer.save(function (err) {
+                    if (!err) {
+                        res.setHeader('Content-Type', 'application/json');
+                        res.end(JSON.stringify(answer));
+                    } else {
+                        //Assume it's because of bad syntax, could we try catch for specific errors?
+                        res.status(400).send("Could not update answer");
+                    }
+                });
+            } else {
+                res.status(404).send("answer was not found");
+            }
+        });
+    } else {
+        res.status(400).send(errors);
+    }
+
+});
+
+
+//POST - create new answer
+app.post("/answers", function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+
+    var datetime = new Date(),
+        errors = req.validationErrors();
+
+    if (!errors) {
+        req.models.answer.create(
+            [{
+                date_posted: datetime,
+                content: req.body.content,
+                owner_id: null,
+                question_id: null
+            }, ],
+            function (err, answer_created) {
+                if (!err) {
+                    var answer = answer_created[0];
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify(answer));
+                } else {
+                    res.status(500).send(err);
+                }
+            }
+        );
+    } else {
+        res.status(400).send(errors);
+    }
+
+});
+
+
+
+//DELETE - destroy Answer
+app.delete('/answers/:answer_id', function (req, res) {
+    req.models.answer.find({id: req.params.answer_id}).remove(function (err) {
+        if (!err) {
+            res.status(200).send("Answer destroyed");
+        } else {
+            res.status(404).send("Could not find user");
+        }
+    });
+});
+
+
+
+/*
+
+TEST CODE
+
+*/
 
 
 
