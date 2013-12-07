@@ -105,6 +105,26 @@ app.get('/users/:user_id', function (req, res) {
     });
 });
 
+app.get('/users/:user_id/questions', function (req, res) {
+    req.models.user.get(req.params.user_id, function (err, user) {
+        if (!err) {
+            //for a single user, list his questions.
+
+            console.log(JSON.stringify(user));
+            // console.log(user.getChild());
+            // req.models.questions.getParent(user, function (err, results) {
+            //     if (!err) {
+            //         console.log(results);
+            //     } else {
+            //         res.status(404).send(err);
+            //     }
+            // });
+        } else {
+            res.status(404).send(err);
+        }
+    });
+});
+
 
 //PUT updates user
 app.put('/users/:user_id', function (req, res) {
@@ -289,7 +309,7 @@ app.post("/questions", function (req, res) {
                 date_posted: datetime,
                 title: req.body.title,
                 content: req.body.content,
-                owner_id: null
+                owner_id: 2
             }, ],
             function (err, question_created) {
                 if (!err) {
