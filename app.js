@@ -110,16 +110,21 @@ app.get('/users/:user_id/questions', function (req, res) {
         if (!err) {
             //for a single user, list his questions.
 
-            console.log(JSON.stringify(user));
+            // console.log(JSON.stringify(user));
             // console.log(user.getChild());
-            // req.models.questions.getParent(user, function (err, results) {
-            //     if (!err) {
-            //         console.log(results);
-            //     } else {
-            //         res.status(404).send(err);
-            //     }
-            // });
+            req.models.question.findByOwner(user, function (err, results) {
+                if (!err) {
+                    console.log("passes");
+                    console.log(results);
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify(results));
+                } else {
+                    console.log("error");
+                    res.status(404).send(err);
+                }
+            });
         } else {
+            console.log("first error")
             res.status(404).send(err);
         }
     });
