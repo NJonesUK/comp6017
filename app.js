@@ -124,7 +124,7 @@ app.get('/users/:user_id/questions', function (req, res) {
                 }
             });
         } else {
-            console.log("first error")
+            console.log("first error");
             res.status(404).send(err);
         }
     });
