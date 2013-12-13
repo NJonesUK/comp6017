@@ -96,7 +96,6 @@ app.get('/users', function (req, res) {
 app.get('/users/:user_id', function (req, res) {
     req.models.user.get(req.params.user_id, function (err, user) {
         if (!err) {
-            // console.log(user.fullName());
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify(user));
         } else {
@@ -114,17 +113,13 @@ app.get('/users/:user_id/questions', function (req, res) {
             // console.log(user.getChild());
             req.models.question.findByOwner(user, function (err, results) {
                 if (!err) {
-                    console.log("passes");
-                    console.log(results);
                     res.setHeader('Content-Type', 'application/json');
                     res.end(JSON.stringify(results));
                 } else {
-                    console.log("error");
                     res.status(404).send(err);
                 }
             });
         } else {
-            console.log("first error");
             res.status(404).send(err);
         }
     });
@@ -213,7 +208,6 @@ app.delete('/users/:user_id', function (req, res) {
             res.status(200).send("User destroyed");
         } else {
             res.status(404).send("Could not find user");
-            console.log(err);
         }
     });
 });
