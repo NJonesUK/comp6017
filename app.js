@@ -206,12 +206,16 @@ app.delete('/users/:user_id', function (req, res) {
     req.models.user.get(req.params.user_id, function (err, user) {
         if (!err) {
             user.remove(function (err) {
-                res.status(200).send("User destroyed");
+                if (!err) {
+                    res.status(200).send("User destroyed");
+                } else {
+                    res.status(500).send("Server Error");
+                }
             });
         } else {
             res.status(404).send("not found");
         }
-    })
+    });
 });
 
 
@@ -335,12 +339,16 @@ app.delete('/questions/:question_id', function (req, res) {
     req.models.question.get(req.params.question_id, function (err, question) {
         if (!err) {
             question.remove(function (err) {
-                res.status(200).send("Question destroyed");
+                if (!err) {
+                    res.status(200).send("Question destroyed");
+                } else {
+                    res.status(500).send("Server Error");
+                }
             });
         } else {
             res.status(404).send("not found");
         }
-    })
+    });
 });
 
 
@@ -457,12 +465,16 @@ app.delete('/answers/:answer_id', function (req, res) {
     req.models.answer.get(req.params.answer_id, function (err, answer) {
         if (!err) {
             answer.remove(function (err) {
-                res.status(200).send("Answer destroyed");
+                if (!err) {
+                    res.status(200).send("Answer destroyed");
+                } else {
+                    res.status(500).send("Server Error");
+                }
             });
         } else {
             res.status(404).send("not found");
         }
-    })
+    });
 });
 
 

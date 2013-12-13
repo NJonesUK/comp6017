@@ -101,75 +101,82 @@ QUESTION TESTS
 */
 describe('Questions', function () {
     this.timeout(15000);
-    var questionID = null;
 
-    it('Should get the questions', function (done) {
-        request('http://127.0.0.1:8888/questions', function (err, res) {
-            if (!err) {
-                res.statusCode.should.equal(200);
-                done();
-            }
+    describe('Correct Tests', function () {
+        var questionID = null;
+
+        it('Should get the questions', function (done) {
+            request('http://127.0.0.1:8888/questions', function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should create a test question', function (done) {
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID =  body.id;
+
+                    body.content.should.equal('testing question');
+                    body.title.should.equal('ThisTitleIsBiggerThan10Chars');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should get the test question', function (done) {
+            request('http://127.0.0.1:8888/questions/' + questionID, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+
+                    body.content.should.equal('testing question');
+                    body.title.should.equal('ThisTitleIsBiggerThan10Chars');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should update the test question', function (done) {
+            request.put({
+                url: 'http://127.0.0.1:8888/questions/' + questionID,
+                form: {content: 'new testing question', title: 'new ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+
+                    body.content.should.equal('new testing question');
+                    body.title.should.equal('new ThisTitleIsBiggerThan10Chars');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+
+        it('Should delete a test question', function (done) {
+            request.del('http://127.0.0.1:8888/questions/' + questionID, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
         });
     });
 
-
-    it('Should create a test question', function (done) {
-        request.post({
-            url: 'http://127.0.0.1:8888/questions',
-            form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
-        }, function (err, res) {
-            if (!err) {
-                var body = JSON.parse(res.body);
-                questionID =  body.id;
-
-                body.content.should.equal('testing question');
-                body.title.should.equal('ThisTitleIsBiggerThan10Chars');
-                res.statusCode.should.equal(200);
-                done();
-            }
-        });
-    });
-
-
-    it('Should get the test question', function (done) {
-        request('http://127.0.0.1:8888/questions/' + questionID, function (err, res) {
-            if (!err) {
-                var body = JSON.parse(res.body);
-
-                body.content.should.equal('testing question');
-                body.title.should.equal('ThisTitleIsBiggerThan10Chars');
-                res.statusCode.should.equal(200);
-                done();
-            }
-        });
-    });
-
-
-    it('Should update the test question', function (done) {
-        request.put({
-            url: 'http://127.0.0.1:8888/questions/' + questionID,
-            form: {content: 'new testing question', title: 'new ThisTitleIsBiggerThan10Chars'}
-        }, function (err, res) {
-            if (!err) {
-                var body = JSON.parse(res.body);
-
-                body.content.should.equal('new testing question');
-                body.title.should.equal('new ThisTitleIsBiggerThan10Chars');
-                res.statusCode.should.equal(200);
-                done();
-            }
-        });
-    });
-
-
-
-    it('Should delete a test question', function (done) {
-        request.del('http://127.0.0.1:8888/questions/' + questionID, function (err, res) {
-            if (!err) {
-                res.statusCode.should.equal(200);
-                done();
-            }
-        });
+    describe('Incorrect Tests', function () {
+        var questionID = null;
     });
 });
 
@@ -331,7 +338,7 @@ describe('Answers', function () {
 
 
         it('Should fail to get the test answer', function (done) {
-            request('http://127.0.0.1:8888/answers/' + (answerID-1), function (err, res) {
+            request('http://127.0.0.1:8888/answers/' + (answerID - 1), function (err, res) {
                 if (!err) {
 
                     res.statusCode.should.equal(404);
@@ -366,10 +373,8 @@ describe('Answers', function () {
         });
 
 
-
-
-        it('Should delete a test answer', function (done) {
-            request.del('http://127.0.0.1:8888/answers/' + (answerID-1), function (err, res) {
+        it('Should fail trying to delete a test answer', function (done) {
+            request.del('http://127.0.0.1:8888/answers/' + (answerID - 1), function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(404);
                     done();
