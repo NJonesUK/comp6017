@@ -203,13 +203,15 @@ app.post("/users", function (req, res) {
 
 //DELETE - destroy User
 app.delete('/users/:user_id', function (req, res) {
-    req.models.user.find({id: req.params.user_id}).remove(function (err) {
+    req.models.user.get(req.params.user_id, function (err, user) {
         if (!err) {
-            res.status(200).send("User destroyed");
+            user.remove(function (err) {
+                res.status(200).send("User destroyed");
+            });
         } else {
-            res.status(404).send("Could not find user");
+            res.status(404).send("not found");
         }
-    });
+    })
 });
 
 
@@ -330,13 +332,15 @@ app.post("/questions", function (req, res) {
 
 //DELETE - destroy Question
 app.delete('/questions/:question_id', function (req, res) {
-    req.models.question.find({id: req.params.question_id}).remove(function (err) {
+    req.models.question.get(req.params.question_id, function (err, question) {
         if (!err) {
-            res.status(200).send("Question destroyed");
+            question.remove(function (err) {
+                res.status(200).send("Question destroyed");
+            });
         } else {
-            res.status(404).send("Could not find user");
+            res.status(404).send("not found");
         }
-    });
+    })
 });
 
 
@@ -450,13 +454,15 @@ app.post("/answers", function (req, res) {
 
 //DELETE - destroy Answer
 app.delete('/answers/:answer_id', function (req, res) {
-    req.models.answer.find({id: req.params.answer_id}).remove(function (err) {
+    req.models.answer.get(req.params.answer_id, function (err, answer) {
         if (!err) {
-            res.status(200).send("Answer destroyed");
+            answer.remove(function (err) {
+                res.status(200).send("Answer destroyed");
+            });
         } else {
-            res.status(404).send("Could not find user");
+            res.status(404).send("not found");
         }
-    });
+    })
 });
 
 
