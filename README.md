@@ -17,15 +17,15 @@ File has been JS Linted. Please keep it that way, I recommend continually runnin
 
 Things we need to do:
 
--user -> Richard
--questions -> Richard
--answers -> Richard
+-user -> Richard √
+-questions -> Richard √
+-answers -> Richard √
 -comments -> Tom
 
 
 -voting on questions & answers -> Nick
 -expose search for questions -> Tom
--get user’s questions -> Richard
+-get user’s questions -> Richard √
 
 -when returning a question, it should return the question, the answers associated without the question, and the comments associated with both questions & answers. Will have to wait for Richard to get user's questions first -> Tom
 
