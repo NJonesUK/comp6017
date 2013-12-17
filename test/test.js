@@ -608,9 +608,21 @@ describe('Answers', function () {
 
 
         it('Should create a test answer', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
             request.post({
                 url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'test answer'}
+                form: {content: 'test answer', 'question_id': questionID}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -626,9 +638,21 @@ describe('Answers', function () {
 
 
         it('Should create a test answer which is exactly 10 chars long', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
             request.post({
                 url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'hello worl'}
+                form: {content: 'hello worl', 'question_id': questionID}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(200);
@@ -709,6 +733,18 @@ describe('Answers', function () {
                 }
             });
         });
+		
+		it('Should fail to create a test answer due to no question ID', function(done) {
+            request.post({
+                url: 'http://127.0.0.1:8888/answers',
+                form: {content: 'test1234567890'}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(404);
+                    done();
+                }
+            });
+		});
 
 
         it('Should fail to create a test answer due to no content', function (done) {
@@ -748,9 +784,21 @@ describe('Answers', function () {
 
 
         it('Should fail to update a test answer due to no content', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
             request.put({
                 url: 'http://127.0.0.1:8888/answers/' + answerID,
-                form: {content: ''}
+                form: {content: '', 'question_id': questionID}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -760,9 +808,21 @@ describe('Answers', function () {
         });
 
         it('Should fail to update a test answer due to less than 10 char content', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
             request.put({
                 url: 'http://127.0.0.1:8888/answers/' + answerID,
-                form: {content: 'hello wor'}
+                form: {content: 'hello wor', 'question_id': questionID}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -792,6 +852,604 @@ describe('Answers', function () {
     });
 });
 
+
+/*
+	QUESTION COMMENT TESTS
+*/
+describe('Question comments', function () {
+    this.timeout(15000);
+
+
+    /*
+        CORRECT TESTS
+    */
+    describe('Correct Tests', function () {
+        var _commentID = null;
+		var _questionID = null;
+		
+        it('Should get all the comments', function (done) {
+            request('http://127.0.0.1:8888/questions/comments', function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should create a test comment', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+					_questionID = body.id;
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions/comments/',
+                form: {content: 'test comment', 'question_id': questionID}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    _commentID =  body.id;
+
+                    body.content.should.equal('test answer');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+
+        it('Should create a test comment which is exactly 10 chars long and delete', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions/comments/',
+                form: {content: 'hello worl', 'question_id': questionID}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    var body = JSON.parse(res.body);
+                    request.del('http://127.0.0.1:8888/questions/' + questionID + '/'+ body.id, function (err, res) {
+                        if (!err) {
+                            res.statusCode.should.equal(200);
+                        }
+                    });
+                    done();
+                }
+            });
+        });
+
+		
+		
+        it('Should get the test comment', function (done) {
+            request('http://127.0.0.1:8888/questions/comments/'+ _questionID +'/' + _commentID, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+
+                    body.content.should.equal('test comment');
+
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should update the test comment', function (done) {
+            request.put({
+                url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID +'/' + _commentID,
+                form: {content: 'new test comment'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+
+                    body.content.should.equal('new test comment');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+
+        it('Should delete a test comment', function (done) {
+            request.del('http://127.0.0.1:8888/questions/comments/'+ _questionID +'/' + _commentID, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+    });
+
+
+    /*
+        INCORRECT TESTS
+    */
+    describe('Incorrect Tests', function () {
+		var _questionID = null;
+        var _commentID = null;
+
+        it('Should create a test comment', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+					_questionID = body.id;
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions/comments/',
+                form: {content: 'test comment', 'question_id': questionID}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    _commentID =  body.id;
+
+                    body.content.should.equal('test comment');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+		
+		it('Should fail to create a test comment due to no question ID', function(done) {
+            request.post({
+                url: 'http://127.0.0.1:8888/questions/comments',
+                form: {content: 'tes1234567890'}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(404);
+                    done();
+                }
+            });
+		});
+
+
+        it('Should fail to create a test comment due to no content', function (done) {
+            request.post({
+                url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID,
+                form: {content: ''}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+        it('Should fail to create a test answer due to less than 10 char content', function (done) {
+            request.post({
+                url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID,
+                form: {content: 'hello wor'}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should fail to get the test comment', function (done) {
+            request('http://127.0.0.1:8888/questions/comments/' + _questionID + '/' + (answerID + 51237), function (err, res) {
+                if (!err) {
+
+                    res.statusCode.should.equal(404);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should fail to update a test comment due to no content', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
+            request.put({
+                url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
+                form: {content: ''}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+        it('Should fail to update a test comment due to less than 10 char content', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
+            request.put({
+                 url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
+                form: {content: 'hello wor'}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should fail trying to delete a test comment', function (done) {
+            request.del('http://127.0.0.1:8888/questions/'+ _questionID +'/'+ (_commentID + 129714), function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(404);
+                    done();
+                }
+            });
+        });
+
+        it('Should fail trying to delete a test comment', function (done) {
+            request.del('http://127.0.0.1:8888/questions/'+ _questionID +'/'+ _commentID, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+    });
+});
+
+/*
+	ANSWER COMMENT TESTS
+*/
+describe('Answer comments', function () {
+    this.timeout(15000);
+
+    /*
+        CORRECT TESTS
+    */
+    describe('Correct Tests', function () {
+        var _commentID = null;
+		var _questionID = null;
+		var _answerID = null;
+		
+        it('Should get all the comments', function (done) {
+            request('http://127.0.0.1:8888/answers/comments', function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should create a test comment', function (done) {
+			var questionID = null;
+			var answerID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+					_questionID = body.id;
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/answers',
+                form: {content: 'test answer', 'question_id': questionID}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    answerID =  body.id;
+					_answerID = body.id;
+
+                    body.content.should.equal('test answer');
+                    res.statusCode.should.equal(200);
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+                form: {content: 'test comment'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    _commentID =  body.id;
+
+                    body.content.should.equal('test comment');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+
+        it('Should create a test comment which is exactly 10 chars long and delete', function (done) {
+			var questionID = null;
+			var answerID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/answers',
+                form: {content: 'test answer', 'question_id': questionID}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    answerID =  body.id;
+
+                    body.content.should.equal('test answer');
+                    res.statusCode.should.equal(200);
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/answers/comments/',
+                form: {content: 'hello worl', 'question_id': questionID}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    var body = JSON.parse(res.body);
+                    request.del('http://127.0.0.1:8888/questions/' + questionID + '/'+ body.id, function (err, res) {
+                        if (!err) {
+                            res.statusCode.should.equal(200);
+                        }
+                    });
+                    done();
+                }
+            });
+        });
+
+		
+		
+        it('Should get the test comment', function (done) {
+            request('http://127.0.0.1:8888/answers/comments/'+ _answerID +'/' + _commentID, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+
+                    body.content.should.equal('test comment');
+
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should update the test comment', function (done) {
+            request.put({
+                url: 'http://127.0.0.1:8888/answers/comments/'+ _answerID +'/' + _commentID,
+                form: {content: 'new test comment'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+
+                    body.content.should.equal('new test comment');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+
+
+        it('Should delete a test comment', function (done) {
+            request.del('http://127.0.0.1:8888/answers/comments/'+ _answerID +'/' + _commentID, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+    });
+
+
+    /*
+        INCORRECT TESTS
+    */
+    describe('Incorrect Tests', function () {
+        var _commentID = null;
+		var _questionID = null;
+		var _answerID = null;
+
+        it('Should create a test comment', function (done) {
+			var questionID = null;
+			var answerID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+					_questionID = body.id;
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/answers',
+                form: {content: 'test answer', 'question_id': questionID}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    answerID =  body.id;
+					_answerID = body.id;
+
+                    body.content.should.equal('test answer');
+                    res.statusCode.should.equal(200);
+                }
+            });
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+                form: {content: 'test comment'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    _commentID =  body.id;
+
+                    body.content.should.equal('test comment');
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+
+        it('Should fail to create a test comment due to no content', function (done) {
+            request.post({
+                url: 'http://127.0.0.1:8888/answers/comments/'+ _answerID,
+                form: {content: ''}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+        it('Should fail to create a test answer due to less than 10 char content', function (done) {
+            request.post({
+                url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID,
+                form: {content: 'hello wor'}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should fail to get the test comment', function (done) {
+            request('http://127.0.0.1:8888/questions/comments/' + _questionID + '/' + (answerID + 51237), function (err, res) {
+                if (!err) {
+
+                    res.statusCode.should.equal(404);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should fail to update a test comment due to no content', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
+            request.put({
+                url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
+                form: {content: ''}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+        it('Should fail to update a test comment due to less than 10 char content', function (done) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+            }, function (err, res) {
+                if (!err) {
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+                }
+            });
+			
+            request.put({
+                 url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
+                form: {content: 'hello wor'}
+            }, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(400);
+                    done();
+                }
+            });
+        });
+
+
+        it('Should fail trying to delete a test comment', function (done) {
+            request.del('http://127.0.0.1:8888/questions/'+ _questionID +'/'+ (_commentID + 129714), function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(404);
+                    done();
+                }
+            });
+        });
+
+        it('Should fail trying to delete a test comment', function (done) {
+            request.del('http://127.0.0.1:8888/questions/'+ _questionID +'/'+ _commentID, function (err, res) {
+                if (!err) {
+                    res.statusCode.should.equal(200);
+                    done();
+                }
+            });
+        });
+    });
+});
 
 
 

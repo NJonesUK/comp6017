@@ -3,6 +3,27 @@ comp6017
 
 Node.js Coursework
 
+FAO NICK:
+
+I have just checked through the code while on board this flight. I have made a series of fixes on Richard's code and probably have a horrific merge to deal with as a result :)
+
+Basically, Richard didn't bind answers to questions. I've now done that. It is likely to be buggy and as such I had to rush through some bits of the code and basically didn't manage to get it fully running. I have therefore done:
+* Answers binding to questions
+* Updated test cases for these
+* Test cases for comments in full (but may not work, please fix or text me or something.)
+* I've done a function that does the overall querying, but this may not work properly. It should just need a couple of lines here and there.
+
+URL schema is as follows:
+* /questions 
+* /questions/comments/:question_id/:answer_id - except when deleting a comment. You may want to change this.
+* /answers
+* /answers/comments/:question_id/:answer_id
+
+** WE HAVE NOT USED HEAD ANYWHERE, CAN WE FIND A USE **
+
+I hope that is OK?
+
+
 Progress is as follows:
 
 Package.json built and apparently working
