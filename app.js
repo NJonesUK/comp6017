@@ -493,7 +493,7 @@ app.post("/questions/comments/:question_id", function (req, res) {
         errors = req.validationErrors();
 
     if (!errors) {
-        req.models.questions.get(req.params.question_id, function (err, question) {
+        req.models.question.get(req.params.question_id, function (err, question) {
             // if there is no error, this question exists. so we can add a new answer
             // to this question
             if (!err) {
@@ -844,7 +844,7 @@ function getQuestionData(req, id) {
     });
 	
 	
-	req.models.questions.get(id, function(err, question) {
+	req.models.question.get(id, function(err, question) {
 		if(!err) {
 			// we have the question, check for comments on the question
 			question.getComments(function(err, comments) {
