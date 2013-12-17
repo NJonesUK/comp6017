@@ -365,10 +365,7 @@ app.post("/questions", function (req, res) {
 	    if (!user) {
 	        res.status(401).send("Invalid user");
 	    }
-		else {
-			console.log(user);
-		}
-
+		
 	    if (!errors) {
             req.models.question.create(
                 [{
@@ -523,35 +520,42 @@ app.post("/questions/comments/:question_id", function (req, res) {
 
     var datetime = new Date(),
         errors = req.validationErrors();
-
-    if (!errors) {
-        req.models.question.get(req.params.question_id, function (err, question) {
-            // if there is no error, this question exists. so we can add a new answer
-            // to this question
-            if (!err) {
-                req.models.comments_question.create(
-                    [{
-                        date_posted: datetime,
-                        content: req.body.content,
-                        question_id: question.id
-                    }],
-                    function (err, comment_created) {
-                        if (!err) {
-                            var comment = comment_created[0];
-                            res.setHeader('Content-Type', 'application/json');
-                            res.end(JSON.stringify(comment));
-                        } else {
-                            res.status(500).send(err);
-                        }
-                    }
-                );
-            } else {
-                res.status(400).send(errors);
-            }
-        });
-    } else {
-        res.status(400).send(errors);
-    }
+		
+	verifyUser(req, function(user) {
+	    if (!user) {
+	        res.status(401).send("Invalid user");
+			return;
+	    }
+	
+	    if (!errors) {
+	        req.models.question.get(req.params.question_id, function (err, question) {
+	            // if there is no error, this question exists. so we can add a new answer
+	            // to this question
+	            if (!err) {
+	                req.models.comments_question.create(
+	                    [{
+	                        date_posted: datetime,
+	                        content: req.body.content,
+	                        question_id: question.id
+	                    }],
+	                    function (err, comment_created) {
+	                        if (!err) {
+	                            var comment = comment_created[0];
+	                            res.setHeader('Content-Type', 'application/json');
+	                            res.end(JSON.stringify(comment));
+	                        } else {
+	                            res.status(500).send(err);
+	                        }
+	                    }
+	                );
+	            } else {
+	                res.status(400).send(errors);
+	            }
+	        });
+	    } else {
+	        res.status(400).send(errors);
+	    }
+	});
 });
 
 //DELETE - destroy comment
@@ -654,34 +658,41 @@ app.post("/answers", function (req, res) {
     req.assert('question_id', 'Question ID is required').notEmpty();
 
     var datetime = new Date(), errors = req.validationErrors();
+	
+	verifyUser(req, function(user) {
+	    if (!user) {
+	        res.status(401).send("Invalid user");
+			return;
+	    }
+		
+	    if (!errors) {
+	        req.models.question.get(req.body.question_id, function (err, question) {
+	            if (err) {
+	                res.status(404).send('Question ID not found');
+	            }
+	        });
 
-    if (!errors) {
-        req.models.question.get(req.body.question_id, function (err, question) {
-            if (err) {
-                res.status(404).send('Question ID not found');
-            }
-        });
-
-        req.models.answer.create(
-            [{
-                date_posted: datetime,
-                content: req.body.content,
-                owner_id: null,
-                question_id: req.body.question_id
-            }],
-            function (err, answer_created) {
-                if (!err) {
-                    var answer = answer_created[0];
-                    res.setHeader('Content-Type', 'application/json');
-                    res.end(JSON.stringify(answer));
-                } else {
-                    res.status(500).send(err);
-                }
-            }
-        );
-    } else {
-        res.status(400).send(errors);
-    }
+	        req.models.answer.create(
+	            [{
+	                date_posted: datetime,
+	                content: req.body.content,
+	                owner_id: null,
+	                question_id: req.body.question_id
+	            }],
+	            function (err, answer_created) {
+	                if (!err) {
+	                    var answer = answer_created[0];
+	                    res.setHeader('Content-Type', 'application/json');
+	                    res.end(JSON.stringify(answer));
+	                } else {
+	                    res.status(500).send(err);
+	                }
+	            }
+	        );
+	    } else {
+	        res.status(400).send(errors);
+	    }
+	});
 
 });
 
@@ -812,35 +823,37 @@ app.post("/answers/comments/:answer_id", function (req, res) {
 
     var datetime = new Date(),
         errors = req.validationErrors();
-
-    if (!errors) {
-        req.models.answer.get(req.params.answer_id, function (err, answer) {
-            // if there is no error, this question exists. so we can add a new answer
-            // to this question
-            if (!err) {
-                req.models.comments_answer.create(
-                    [{
-                        date_posted: datetime,
-                        content: req.body.content,
-                        answer_id: answer.id
-                    }],
-                    function (err, comment_created) {
-                        if (!err) {
-                            var comment = comment_created[0];
-                            res.setHeader('Content-Type', 'application/json');
-                            res.end(JSON.stringify(comment));
-                        } else {
-                            res.status(500).send(err);
-                        }
-                    }
-                );
-            } else {
-                res.status(400).send(errors);
-            }
-        });
-    } else {
-        res.status(400).send(errors);
-    }
+		
+	verifyUser(req, function(user) {
+	    if (!errors) {
+	        req.models.answer.get(req.params.answer_id, function (err, answer) {
+	            // if there is no error, this question exists. so we can add a new answer
+	            // to this question
+	            if (!err) {
+	                req.models.comments_answer.create(
+	                    [{
+	                        date_posted: datetime,
+	                        content: req.body.content,
+	                        answer_id: answer.id
+	                    }],
+	                    function (err, comment_created) {
+	                        if (!err) {
+	                            var comment = comment_created[0];
+	                            res.setHeader('Content-Type', 'application/json');
+	                            res.end(JSON.stringify(comment));
+	                        } else {
+	                            res.status(500).send(err);
+	                        }
+	                    }
+	                );
+	            } else {
+	                res.status(400).send(errors);
+	            }
+	        });
+	    } else {
+	        res.status(400).send(errors);
+	    }
+	});
 });
 
 //DELETE - destroy comment

@@ -621,7 +621,7 @@ describe('Answers', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -651,7 +651,7 @@ describe('Answers', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'hello worl', 'question_id': questionID}
+	                form: {content: 'hello worl', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    res.statusCode.should.equal(200);
@@ -732,7 +732,7 @@ describe('Answers', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -749,7 +749,7 @@ describe('Answers', function () {
 		it('Should fail to create a test answer due to no question ID', function(done) {
             request.post({
                 url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'test1234567890'}
+                form: {content: 'test1234567890', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -762,7 +762,7 @@ describe('Answers', function () {
         it('Should fail to create a test answer due to no content', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/answers',
-                form: {content: ''}
+                form: {content: '', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -774,7 +774,7 @@ describe('Answers', function () {
         it('Should fail to create a test answer due to less than 10 char content', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'hello wor'}
+                form: {content: 'hello wor', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -809,7 +809,7 @@ describe('Answers', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -846,7 +846,7 @@ describe('Answers', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -929,7 +929,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'test comment'}
+	                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -959,7 +959,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'hello worl'}
+	                form: {content: 'hello worl', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    res.statusCode.should.equal(200);
@@ -1001,7 +1001,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'hello world'}
+	                form: {content: 'hello world', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    res.statusCode.should.equal(200);
@@ -1044,7 +1044,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'hello worl'}
+	                form: {content: 'hello worl', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    res.statusCode.should.equal(200);
@@ -1084,7 +1084,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'test comment'}
+	                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1101,7 +1101,7 @@ describe('Question comments', function () {
 		it('Should fail to create a test comment due to no question ID', function(done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions/comments',
-                form: {content: 'tes1234567890'}
+                form: {content: 'tes1234567890', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(404);
@@ -1114,7 +1114,7 @@ describe('Question comments', function () {
         it('Should fail to create a test comment due to no content', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID,
-                form: {content: ''}
+                form: {content: '', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -1126,7 +1126,7 @@ describe('Question comments', function () {
         it('Should fail to create a test answer due to less than 10 char content', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID,
-                form: {content: 'hello wor'}
+                form: {content: 'hello wor', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -1150,7 +1150,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'test comment'}
+	                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1186,7 +1186,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'test comment'}
+	                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1223,7 +1223,7 @@ describe('Question comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
-	                form: {content: 'test comment'}
+	                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1297,7 +1297,7 @@ describe('Answer comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1310,7 +1310,7 @@ describe('Answer comments', function () {
 					
 		            request.post({
 		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-		                form: {content: 'test comment'}
+		                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 		            }, function (err, res) {
 		                if (!err) {
 		                    var body = JSON.parse(res.body);
@@ -1342,7 +1342,7 @@ describe('Answer comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1354,7 +1354,7 @@ describe('Answer comments', function () {
 					
 		            request.post({
 		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-		                form: {content: 'hello worl'}
+		                form: {content: 'hello worl', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 		            }, function (err, res) {
 		                if (!err) {
 		                    res.statusCode.should.equal(200);
@@ -1403,7 +1403,7 @@ describe('Answer comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1415,7 +1415,7 @@ describe('Answer comments', function () {
 					
 		            request.post({
 		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-		                form: {content: 'hello worl'}
+		                form: {content: 'hello worl', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 		            }, function (err, res) {
 		                if (!err) {
 		                    res.statusCode.should.equal(200);
@@ -1464,7 +1464,7 @@ describe('Answer comments', function () {
         it('Should fail to create a test comment due to no content', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/answers/comments/'+ _answerID,
-                form: {content: ''}
+                form: {content: '', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -1476,7 +1476,7 @@ describe('Answer comments', function () {
         it('Should fail to create a test answer due to less than 10 char content', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID,
-                form: {content: 'hello wor'}
+                form: {content: 'hello wor', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -1504,7 +1504,7 @@ describe('Answer comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1517,7 +1517,7 @@ describe('Answer comments', function () {
 					
 		            request.post({
 		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-		                form: {content: 'test comment'}
+		                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 		            }, function (err, res) {
 		                if (!err) {
 		                    var body = JSON.parse(res.body);
@@ -1556,7 +1556,7 @@ describe('Answer comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1569,7 +1569,7 @@ describe('Answer comments', function () {
 					
 		            request.post({
 		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-		                form: {content: 'test comment'}
+		                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 		            }, function (err, res) {
 		                if (!err) {
 		                    var body = JSON.parse(res.body);
@@ -1609,7 +1609,7 @@ describe('Answer comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1622,7 +1622,7 @@ describe('Answer comments', function () {
 					
 		            request.post({
 		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-		                form: {content: 'test comment'}
+		                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 		            }, function (err, res) {
 		                if (!err) {
 		                    var body = JSON.parse(res.body);
@@ -1672,7 +1672,7 @@ describe('Answer comments', function () {
 				
 	            request.post({
 	                url: 'http://127.0.0.1:8888/answers',
-	                form: {content: 'test answer', 'question_id': questionID}
+	                form: {content: 'test answer', 'question_id': questionID, 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
@@ -1685,7 +1685,7 @@ describe('Answer comments', function () {
 					
 		            request.post({
 		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-		                form: {content: 'test comment'}
+		                form: {content: 'test comment', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
 		            }, function (err, res) {
 		                if (!err) {
 		                    var body = JSON.parse(res.body);
