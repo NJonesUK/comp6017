@@ -52,6 +52,25 @@ app.use(orm.express("sqlite://test.db",
                 }, {
                 });
 
+			models.comments_question = db.define("comments_question",
+				{
+					content : String,
+					date_posted : Date
+				},{	
+				});
+
+			db.models.comments_question.hasOne("owner", db.models.user, { reverse: 'comments_question' });
+			db.models.comments_question.hasOne("question", db.models.question, { reverse: 'comments' });
+
+			models.comments_answer = db.define("comments_answer",
+				{
+					content : String,
+					date_posted : Date 
+				}, {	
+				});
+				
+			db.models.comments_answer.hasOne("owner", db.models.user, { reverse: 'comments_answer' });
+			db.models.comments_answer.hasOne("answer", db.models.answer, { reverse: 'comments' });
         }
     }));
 	
@@ -75,8 +94,6 @@ function verifyUser (user, password) {
 app.listen(8888);
 //console.log("verifyuser: " + verifyUser(2, "test"));
 console.log("Server running at http://127.0.0.1:8888/");
-
-
 
 
 /*
@@ -340,7 +357,6 @@ app.post("/questions", function (req, res) {
     } else {
         res.status(400).send(errors);
     }
-
 });
 
 
@@ -362,6 +378,163 @@ app.delete('/questions/:question_id', function (req, res) {
     });
 });
 
+/*
+
+QUESTION COMMENT CODE
+
+*/
+
+app.get('/questions/comments', function (req, res) {
+    req.models.question_comments.find(
+        {},
+        {},
+        function (err, all_question_comments) {
+            if (!err) {
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify(all_question_comments));
+            } else {
+                res.status(400).send(err);
+            }
+        }
+    );
+});
+
+app.get('/questions/comments/:question_id', function (req, res) {
+	// this gets the question, and then we need to get the comments from that.
+    req.models.question.get(req.params.question_id, function (err, question) {
+        if (!err) {
+            res.setHeader('Content-Type', 'application/json');
+			
+			// we have the question.
+			question.getComments(function(err, comments) {
+				if(!err) {
+					res.end(JSON.stringify(comments))
+				} else {
+					res.status(404).send('Comment not found');
+				}
+			});
+        } else {
+            res.status(404).send('Comment not found');
+        }
+    });
+});
+
+app.get('/questions/comments/:question_id/:comment_id', function (req, res) {
+	// this gets the question, and then we need to get the comments from that.
+    req.models.comments_question.get(req.params.comment_id, function (err, comment) {
+        if (!err) {
+            res.setHeader('Content-Type', 'application/json');
+			
+			// we have the answer, verify this is from the right question
+			comment.getOwner(function(err, owner) {
+				if(!err) {
+		            res.end(JSON.stringify(comment));
+				}
+				else {
+					res.status(404).send('Comment not found');
+				}
+			});
+			
+        } else {
+            res.status(404).send('Comment not found');
+        }
+    });
+});
+
+// PUT - update question comment
+app.put('/questions/comments/:question_id/:comment_id', function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        req.models.comments_question.get(req.params.comment_id, function (err, comment) {
+            if (!err) {
+				
+				// verify this comment belongs to the question
+				if(comment.id == req.params.question_id) {
+
+					// update the content
+	                comment.content = req.body.content;
+					
+	                comment.save(function (err) {
+	                    if (!err) {
+	                        res.setHeader('Content-Type', 'application/json');
+	                        res.end(JSON.stringify(comment));
+	                    } else {
+	                        //Assume it's because of bad syntax, could we try catch for specific errors?
+	                        res.status(400).send("Could not update comment");
+	                    }
+	                });
+				} else {
+					res.status(404).send("Comment with this question id was not found");
+				}
+            } else {
+                res.status(404).send("Comment was not found");
+            }
+        });
+    } else {
+        res.status(400).send("Bad Syntax" + errors);
+    }
+});
+
+//POST - create new question comment
+app.post("/questions/comments/:question_id", function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+
+    var datetime = new Date(),
+        errors = req.validationErrors();
+
+    if (!errors) {
+		req.models.questions.get(req.params.question_id, function(err, question) {
+			// if there is no error, this question exists. so we can add a new answer
+			// to this question
+			if(!err) {
+				req.models.comments_question.create(
+					[{
+						date_posted: datetime,
+						content: req.body.content,
+						question_id: question.id
+					}], 
+					function (err, comment_created) {
+						if(!err) {
+		                    var comment = comment_created[0];
+		                    res.setHeader('Content-Type', 'application/json');
+		                    res.end(JSON.stringify(comment));
+						} else {
+							res.status(500).send(err);
+						}
+					}
+				);
+			} else {
+				res.status(400).send(errors);
+			}
+		});
+    } else {
+        res.status(400).send(errors);
+    }
+});
+
+//DELETE - destroy comment
+app.delete('/questions/:question_id/:comment_id', function (req, res) {
+    req.models.comments_question.get(req.params.comment_id, function (err, comment) {
+        if (!err) {
+            comment.remove(function (err) {
+                if (!err) {
+                    res.status(200).send("Comment destroyed");
+                } else {
+                    res.status(500).send("Server Error");
+                }
+            });
+        } else {
+            res.status(404).send("not found");
+        }
+    });
+});
 
 /*
 
@@ -478,6 +651,164 @@ app.delete('/answers/:answer_id', function (req, res) {
             answer.remove(function (err) {
                 if (!err) {
                     res.status(200).send("Answer destroyed");
+                } else {
+                    res.status(500).send("Server Error");
+                }
+            });
+        } else {
+            res.status(404).send("not found");
+        }
+    });
+});
+
+/*
+
+comments for answers
+
+*/
+
+app.get('/answers/comments', function (req, res) {
+    req.models.comments_answer.find(
+        {},
+        {},
+        function (err, all_answer_comments) {
+            if (!err) {
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify(all_answer_comments));
+            } else {
+                res.status(400).send(err);
+            }
+        }
+    );
+});
+
+app.get('/answers/comments/:answer_id', function (req, res) {
+	// this gets the question, and then we need to get the comments from that.
+    req.models.answer.get(req.params.answer_id, function (err, answer) {
+        if (!err) {
+            res.setHeader('Content-Type', 'application/json');
+			
+			// we have the question.
+			answer.getComments(function(err, comments) {
+				if(!err) {
+					res.end(JSON.stringify(comments))
+				} else {
+					res.status(404).send('Comment not found');
+				}
+			});
+        } else {
+            res.status(404).send('Comment not found');
+        }
+    });
+});
+
+app.get('/answers/comments/:answer_id/:comment_id', function (req, res) {
+	// this gets the question, and then we need to get the comments from that.
+    req.models.comments_answer.get(req.params.comment_id, function (err, comment) {
+        if (!err) {
+            res.setHeader('Content-Type', 'application/json');
+			
+			// we have the answer, verify this is from the right question
+			comment.getOwner(function(err, owner) {
+				if(!err) {
+		            res.end(JSON.stringify(comment));
+				}
+				else {
+					res.status(404).send('Comment not found');
+				}
+			});
+			
+        } else {
+            res.status(404).send('Comment not found');
+        }
+    });
+});
+
+// PUT - update question comment
+app.put('/answers/comments/:answer_id/:comment_id', function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+
+    var errors = req.validationErrors();
+
+    if (!errors) {
+        req.models.comments_answer.get(req.params.comment_id, function (err, comment) {
+            if (!err) {
+				
+				// verify this comment belongs to the question
+				if(comment.id == req.params.answer_id) {
+
+					// update the content
+	                comment.content = req.body.content;
+					
+	                comment.save(function (err) {
+	                    if (!err) {
+	                        res.setHeader('Content-Type', 'application/json');
+	                        res.end(JSON.stringify(comment));
+	                    } else {
+	                        //Assume it's because of bad syntax, could we try catch for specific errors?
+	                        res.status(400).send("Could not update comment");
+	                    }
+	                });
+				} else {
+					res.status(404).send("Comment with this answer id was not found");
+				}
+            } else {
+                res.status(404).send("Comment was not found");
+            }
+        });
+    } else {
+        res.status(400).send("Bad Syntax" + errors);
+    }
+});
+
+//POST - create new question comment
+app.post("/answers/comments/:answer_id", function (req, res) {
+
+    req.assert('content', 'Content is required').notEmpty();
+    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+
+    var datetime = new Date(),
+        errors = req.validationErrors();
+
+    if (!errors) {
+		req.models.answer.get(req.params.answer_id, function(err, answer) {
+			// if there is no error, this question exists. so we can add a new answer
+			// to this question
+			if(!err) {
+				req.models.comments_answer.create(
+					[{
+						date_posted: datetime,
+						content: req.body.content,
+						answer_id: answer.id
+					}], 
+					function (err, comment_created) {
+						if(!err) {
+		                    var comment = comment_created[0];
+		                    res.setHeader('Content-Type', 'application/json');
+		                    res.end(JSON.stringify(comment));
+						} else {
+							res.status(500).send(err);
+						}
+					}
+				);
+			} else {
+				res.status(400).send(errors);
+			}
+		});
+    } else {
+        res.status(400).send(errors);
+    }
+});
+
+//DELETE - destroy comment
+app.delete('/answers/comments/:answer_id/:comment_id', function (req, res) {
+    req.models.comments_answer.get(req.params.comment_id, function (err, comment) {
+        if (!err) {
+            comment.remove(function (err) {
+                if (!err) {
+                    res.status(200).send("Comment destroyed");
                 } else {
                     res.status(500).send("Server Error");
                 }
