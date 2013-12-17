@@ -475,8 +475,8 @@ app.get('/questions/comments/:question_id/:comment_id', function (req, res) {
 // PUT - update question comment
 app.put('/questions/comments/:question_id/:comment_id', function (req, res) {
 
-    req.assert('content', 'Content is required').notEmpty();
-    req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+    req.assert('content', '1Content is required').notEmpty();
+    req.assert('content', '2Content has to be between 10 and 600 chars').len(10, 600);
 
     var errors = req.validationErrors();
 
@@ -484,28 +484,34 @@ app.put('/questions/comments/:question_id/:comment_id', function (req, res) {
         req.models.comments_question.get(req.params.comment_id, function (err, comment) {
             if (!err) {
                 // verify this comment belongs to the question
-                if (comment.id === req.params.question_id) {
-
-                    // update the content
-                    comment.content = req.body.content;
-                    comment.save(function (err) {
-                        if (!err) {
-                            res.setHeader('Content-Type', 'application/json');
-                            res.end(JSON.stringify(comment));
-                        } else {
-                            //Assume it's because of bad syntax, could we try catch for specific errors?
-                            res.status(400).send("Could not update comment");
-                        }
-                    });
-                } else {
-                    res.status(404).send("Comment with this question id was not found");
-                }
+				console.log('comment is')
+				console.log(comment);
+				console.log('req params');
+				console.log(req.params);
+				
+                comment.getQuestion(function(err, question) {
+                	if(!err && question.id == req.params.question_id) {
+	                    // update the content
+	                    comment.content = req.body.content;
+	                    comment.save(function (err) {
+	                        if (!err) {
+	                            res.setHeader('Content-Type', 'application/json');
+	                            res.end(JSON.stringify(comment));
+	                        } else {
+	                            //Assume it's because of bad syntax, could we try catch for specific errors?
+	                            res.status(400).send("3Could not update comment");
+	                        }
+	                    });
+	                } else {
+	                    res.status(404).send("4Comment with this question id was not found");
+	                }
+				});
             } else {
-                res.status(404).send("Comment was not found");
+                res.status(404).send("5Comment was not found");
             }
         });
     } else {
-        res.status(400).send("Bad Syntax" + errors);
+        res.status(400).send("6Bad Syntax" + errors);
     }
 });
 
