@@ -316,7 +316,7 @@ describe('Questions', function () {
         it('Should create a test question', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -334,7 +334,7 @@ describe('Questions', function () {
         it('Should create a test question with title being 10 chars', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'thistitlei'}
+                form: {content: 'testing question', title: 'thistitlei', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -355,7 +355,7 @@ describe('Questions', function () {
         it('Should create a test question with content being 10 chars', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'thistitlei', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'thistitlei', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -422,7 +422,7 @@ describe('Questions', function () {
         it('Should create a test question', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -440,7 +440,7 @@ describe('Questions', function () {
         it('Should fail to create a test question because title is blank', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: ''}
+                form: {content: 'testing question', title: '', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -452,7 +452,7 @@ describe('Questions', function () {
         it('Should fail to create a test question because title is less than 10 chars', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'title'}
+                form: {content: 'testing question', title: 'title', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -465,7 +465,7 @@ describe('Questions', function () {
         it('Should fail to create a test question because content is blank', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: '', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: '', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -478,7 +478,7 @@ describe('Questions', function () {
         it('Should fail to create a test question because content is less than 10 chars', function (done) {
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'test', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'test', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(400);
@@ -612,7 +612,7 @@ describe('Answers', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -642,7 +642,7 @@ describe('Answers', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -723,7 +723,7 @@ describe('Answers', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -800,22 +800,35 @@ describe('Answers', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.put({
-                url: 'http://127.0.0.1:8888/answers/' + answerID,
-                form: {content: '', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(400);
-                    done();
-                }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.put({
+		                url: 'http://127.0.0.1:8888/answers/' + answerID,
+		                form: {content: '', 'question_id': questionID}
+		            }, function (err, res) {
+		                if (!err) {
+		                    res.statusCode.should.equal(400);
+		                    done();
+		                }
+		            });
+	            });
             });
         });
 
@@ -824,28 +837,50 @@ describe('Answers', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.put({
-                url: 'http://127.0.0.1:8888/answers/' + answerID,
-                form: {content: 'hello wor', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(400);
-                    done();
-                }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.put({
+		                url: 'http://127.0.0.1:8888/answers/' + answerID,
+		                form: {content: '', 'question_id': questionID}
+		            }, function (err, res) {
+		                if (!err) {
+		                    res.statusCode.should.equal(400);
+		                }
+						
+			            request.put({
+			                url: 'http://127.0.0.1:8888/answers/' + answerID,
+			                form: {content: 'hello wor', 'question_id': questionID}
+			            }, function (err, res) {
+			                if (!err) {
+			                    res.statusCode.should.equal(400);
+			                    done();
+			                }
+			            });
+		            });
+	            });
             });
         });
 
 
         it('Should fail trying to delete a test answer', function (done) {
-            request.del('http://127.0.0.1:8888/answers/' + (answerID - 1), function (err, res) {
+            request.del('http://127.0.0.1:8888/answers/' + (answerID + 112937128937198248), function (err, res) {
                 if (!err) {
                     res.statusCode.should.equal(404);
                     done();
@@ -884,7 +919,7 @@ describe('Question comments', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -893,14 +928,14 @@ describe('Question comments', function () {
                 }
 				
 	            request.post({
-	                url: 'http://127.0.0.1:8888/questions/comments/',
-	                form: {content: 'test comment', 'question_id': questionID}
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'test comment'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    var body = JSON.parse(res.body);
 	                    _commentID =  body.id;
 
-	                    body.content.should.equal('test answer');
+	                    body.content.should.equal('test comment');
 	                    res.statusCode.should.equal(200);
 	                    done();
 	                }
@@ -910,12 +945,12 @@ describe('Question comments', function () {
 
 
 
-        it('Should create a test comment which is exactly 10 chars long and delete', function (done) {
+        it('Should create a test comment which is exactly 10 chars long', function (done) {
 			var questionID = null;
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
@@ -923,18 +958,13 @@ describe('Question comments', function () {
                 }
 				
 	            request.post({
-	                url: 'http://127.0.0.1:8888/questions/comments/',
-	                form: {content: 'hello worl', 'question_id': questionID}
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'hello worl'}
 	            }, function (err, res) {
 	                if (!err) {
 	                    res.statusCode.should.equal(200);
 	                    var body = JSON.parse(res.body);
-	                    request.del('http://127.0.0.1:8888/questions/' + questionID + '/'+ body.id, function (err, res) {
-	                        if (!err) {
-	                            res.statusCode.should.equal(200);
-	                        }
-	                    });
-	                    done();
+						done();
 	                }
 	            });
             });
@@ -957,28 +987,76 @@ describe('Question comments', function () {
 
 
         it('Should update the test comment', function (done) {
-            request.put({
-                url: 'http://127.0.0.1:8888/questions/comments/'+ _questionID +'/' + _commentID,
-                form: {content: 'new test comment'}
+			var questionID = null;
+			var commentID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
-
-                    body.content.should.equal('new test comment');
-                    res.statusCode.should.equal(200);
-                    done();
+                    questionID = body.id;
                 }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'hello world'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    res.statusCode.should.equal(200);
+	                    var body = JSON.parse(res.body);
+						
+						commentID = body.id;
+						
+			            request.put({
+			                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID +'/' + commentID,
+			                form: {content: 'new test comment'}
+			            }, function (err, res) {
+			                if (!err) {
+			                    var body = JSON.parse(res.body);
+
+			                    body.content.should.equal('new test comment');
+			                    res.statusCode.should.equal(200);
+			                    done();
+			                }
+			            });
+	                }
+	            });
             });
+			
+            
         });
 
 
 
         it('Should delete a test comment', function (done) {
-            request.del('http://127.0.0.1:8888/questions/comments/'+ _questionID +'/' + _commentID, function (err, res) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
+            }, function (err, res) {
                 if (!err) {
-                    res.statusCode.should.equal(200);
-                    done();
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
                 }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'hello worl'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    res.statusCode.should.equal(200);
+	                    var body = JSON.parse(res.body);						
+	                    request.del('http://127.0.0.1:8888/questions/' + questionID + '/'+ body.id, function (err, res) {
+	                        if (!err) {
+	                            res.statusCode.should.equal(200);
+	                        }
+	                    });
+	                    done();
+	                }
+	            });
             });
         });
     });
@@ -996,27 +1074,27 @@ describe('Question comments', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
 					_questionID = body.id;
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/questions/comments/',
-                form: {content: 'test comment', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    _commentID =  body.id;
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'test comment'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    _commentID =  body.id;
 
-                    body.content.should.equal('test comment');
-                    res.statusCode.should.equal(200);
-                    done();
-                }
+	                    body.content.should.equal('test comment');
+	                    res.statusCode.should.equal(200);
+	                    done();
+	                }
+	            });
             });
         });
 		
@@ -1059,12 +1137,37 @@ describe('Question comments', function () {
 
 
         it('Should fail to get the test comment', function (done) {
-            request('http://127.0.0.1:8888/questions/comments/' + _questionID + '/' + (answerID + 51237), function (err, res) {
+			var questionID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
+            }, function (err, res) {
                 if (!err) {
-
-                    res.statusCode.should.equal(404);
-                    done();
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
                 }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'test comment'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    var commentID = body.id;
+
+	                    body.content.should.equal('test comment');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request('http://127.0.0.1:8888/questions/comments/' + questionID + '/' + (commentID + 51237), function (err, res) {
+		                if (!err) {
+
+		                    res.statusCode.should.equal(404);
+		                    done();
+		                }
+		            });
+	            });
             });
         });
 
@@ -1074,22 +1177,35 @@ describe('Question comments', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.put({
-                url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
-                form: {content: ''}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(400);
-                    done();
-                }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'test comment'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    var commentID = body.id;
+
+	                    body.content.should.equal('test comment');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.put({
+		                url: 'http://127.0.0.1:8888/questions/comments/' + questionID + '/'+ commentID,
+		                form: {content: ''}
+		            }, function (err, res) {
+		                if (!err) {
+		                    res.statusCode.should.equal(400);
+		                    done();
+		                }
+		            });
+	            });
             });
         });
 
@@ -1098,22 +1214,35 @@ describe('Question comments', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.put({
-                 url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
-                form: {content: 'hello wor'}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(400);
-                    done();
-                }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/'+ questionID,
+	                form: {content: 'test comment'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    var commentID = body.id;
+
+	                    body.content.should.equal('test comment');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.put({
+		                url: 'http://127.0.0.1:8888/questions/comments/' + questionID + '/'+ commentID,
+		                form: {content: 'hello'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    res.statusCode.should.equal(400);
+		                    done();
+		                }
+		            });
+	            });
             });
         });
 
@@ -1158,41 +1287,41 @@ describe('Answer comments', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
 					_questionID = body.id;
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'test answer', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    answerID =  body.id;
-					_answerID = body.id;
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+						_answerID = body.id;
 
-                    body.content.should.equal('test answer');
-                    res.statusCode.should.equal(200);
-                }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-                form: {content: 'test comment'}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    _commentID =  body.id;
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.post({
+		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+		                form: {content: 'test comment'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    var body = JSON.parse(res.body);
+		                    _commentID =  body.id;
 
-                    body.content.should.equal('test comment');
-                    res.statusCode.should.equal(200);
-                    done();
-                }
+		                    body.content.should.equal('test comment');
+		                    res.statusCode.should.equal(200);
+		                    done();
+		                }
+		            });
+	            });
             });
         });
 
@@ -1204,41 +1333,42 @@ describe('Answer comments', function () {
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'test answer', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    answerID =  body.id;
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
 
-                    body.content.should.equal('test answer');
-                    res.statusCode.should.equal(200);
-                }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers/comments/',
-                form: {content: 'hello worl', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(200);
-                    var body = JSON.parse(res.body);
-                    request.del('http://127.0.0.1:8888/questions/' + questionID + '/'+ body.id, function (err, res) {
-                        if (!err) {
-                            res.statusCode.should.equal(200);
-                        }
-                    });
-                    done();
-                }
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.post({
+		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+		                form: {content: 'hello worl'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    res.statusCode.should.equal(200);
+							
+		                    var body = JSON.parse(res.body);
+		                    request.del('http://127.0.0.1:8888/answers/comments/' + questionID + '/'+ body.id, function (err, res) {
+		                        if (!err) {
+		                            res.statusCode.should.equal(200);
+		                        }
+		                    });
+		                    done();
+		                }
+		            });
+	            });
             });
         });
 
@@ -1259,17 +1389,54 @@ describe('Answer comments', function () {
 
 
         it('Should update the test comment', function (done) {
-            request.put({
-                url: 'http://127.0.0.1:8888/answers/comments/'+ _answerID +'/' + _commentID,
-                form: {content: 'new test comment'}
+			var questionID = null;
+			var answerID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
-
-                    body.content.should.equal('new test comment');
-                    res.statusCode.should.equal(200);
-                    done();
+                    questionID = body.id;
                 }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.post({
+		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+		                form: {content: 'hello worl'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    res.statusCode.should.equal(200);
+		                    var body = JSON.parse(res.body);
+							var commentID = body.id;
+							
+				            request.put({
+				                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID +'/' + commentID,
+				                form: {content: 'new test comment'}
+				            }, function (err, res) {
+				                if (!err) {
+				                    var body = JSON.parse(res.body);
+
+				                    body.content.should.equal('new test comment');
+				                    res.statusCode.should.equal(200);
+				                    done();
+				                }
+				            });
+		                }	
+		            });		            
+	            });
             });
         });
 
@@ -1293,50 +1460,6 @@ describe('Answer comments', function () {
         var _commentID = null;
 		var _questionID = null;
 		var _answerID = null;
-
-        it('Should create a test comment', function (done) {
-			var questionID = null;
-			var answerID = null;
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    questionID = body.id;
-					_questionID = body.id;
-                }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'test answer', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    answerID =  body.id;
-					_answerID = body.id;
-
-                    body.content.should.equal('test answer');
-                    res.statusCode.should.equal(200);
-                }
-				
-	            request.post({
-	                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-	                form: {content: 'test comment'}
-	            }, function (err, res) {
-	                if (!err) {
-	                    var body = JSON.parse(res.body);
-	                    _commentID =  body.id;
-
-	                    body.content.should.equal('test comment');
-	                    res.statusCode.should.equal(200);
-	                    done();
-	                }
-	            });
-            });
-        });
 
         it('Should fail to create a test comment due to no content', function (done) {
             request.post({
@@ -1364,62 +1487,163 @@ describe('Answer comments', function () {
 
 
         it('Should fail to get the test comment', function (done) {
-            request('http://127.0.0.1:8888/questions/comments/' + _questionID + '/' + (answerID + 51237), function (err, res) {
+			
+			var questionID = null;
+			var answerID = null;
+			var commentID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
+            }, function (err, res) {
                 if (!err) {
-
-                    res.statusCode.should.equal(404);
-                    done();
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+					_questionID = body.id;
                 }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+						_answerID = body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.post({
+		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+		                form: {content: 'test comment'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    var body = JSON.parse(res.body);
+		                    commentID =  body.id;
+
+		                    body.content.should.equal('test comment');
+		                    res.statusCode.should.equal(200);
+		                }
+						
+			            request('http://127.0.0.1:8888/answers/comments/' + answerID + '/' + (commentID + 51237), function (err, res) {
+			                if (!err) {
+
+			                    res.statusCode.should.equal(404);
+			                    done();
+			                }
+			            });
+		            });
+	            });
             });
         });
 
 
         it('Should fail to update a test comment due to no content', function (done) {
 			var questionID = null;
+			var answerID = null;
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
+					_questionID = body.id;
                 }
 				
-	            request.put({
-	                url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
-	                form: {content: ''}
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
 	            }, function (err, res) {
 	                if (!err) {
-	                    res.statusCode.should.equal(400);
-	                    done();
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+						_answerID = body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
 	                }
+					
+		            request.post({
+		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+		                form: {content: 'test comment'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    var body = JSON.parse(res.body);
+		                    _commentID =  body.id;
+
+		                    body.content.should.equal('test comment');
+		                    res.statusCode.should.equal(200);
+		                }
+						
+			            request.put({
+			                url: 'http://127.0.0.1:8888/answers/comments/' + questionID +'/'+ body.id,
+			                form: {content: ''}
+			            }, function (err, res) {
+			                if (!err) {
+			                    res.statusCode.should.equal(400);
+			                    done();
+			                }
+			            });
+		            });
 	            });
-            });
+            });		
         });
 
         it('Should fail to update a test comment due to less than 10 char content', function (done) {
 			var questionID = null;
+			var answerID = null;
 			
             request.post({
                 url: 'http://127.0.0.1:8888/questions',
-                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
+					_questionID = body.id;
                 }
 				
-	            request.put({
-	                 url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
-	                form: {content: 'hello wor'}
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
 	            }, function (err, res) {
 	                if (!err) {
-	                    res.statusCode.should.equal(400);
-	                    done();
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+						_answerID = body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
 	                }
+					
+		            request.post({
+		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+		                form: {content: 'test comment'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    var body = JSON.parse(res.body);
+		                    _commentID =  body.id;
+
+		                    body.content.should.equal('test comment');
+		                    res.statusCode.should.equal(200);
+		                }
+						
+			            request.put({
+			                url: 'http://127.0.0.1:8888/answers/comments/' + questionID +'/'+ body.id,
+			                form: {content: 'abc'}
+			            }, function (err, res) {
+			                if (!err) {
+			                    res.statusCode.should.equal(400);
+			                    done();
+			                }
+			            });
+		            });
 	            });
-            });
+            });	
         });
 
 
@@ -1433,12 +1657,56 @@ describe('Answer comments', function () {
         });
 
         it('Should fail trying to delete a test comment', function (done) {
-            request.del('http://127.0.0.1:8888/questions/'+ _questionID +'/'+ _commentID, function (err, res) {
+			var questionID = null;
+			var answerID = null;
+			
+            request.post({
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars', 'email': 'rr15g10@ecs.soton.ac.uk', 'password': 'hello'}
+            }, function (err, res) {
                 if (!err) {
-                    res.statusCode.should.equal(200);
-                    done();
+                    var body = JSON.parse(res.body);
+                    questionID = body.id;
+					_questionID = body.id;
                 }
-            });
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+						_answerID = body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                }
+					
+		            request.post({
+		                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+		                form: {content: 'test comment'}
+		            }, function (err, res) {
+		                if (!err) {
+		                    var body = JSON.parse(res.body);
+		                    _commentID =  body.id;
+
+		                    body.content.should.equal('test comment');
+		                    res.statusCode.should.equal(200);
+		                }
+						
+			            request.del({
+			                url: 'http://127.0.0.1:8888/answers/comments/' + questionID +'/'+ (body.id + 127172786),
+			                form: {content: ''}
+			            }, function (err, res) {
+			                if (!err) {
+			                    res.statusCode.should.equal(404);
+			                    done();
+			                }
+			            });
+		            });
+	            });
+            });		
         });
     });
 });

@@ -777,23 +777,24 @@ app.put('/answers/comments/:answer_id/:comment_id', function (req, res) {
             if (!err) {
 
                 // verify this comment belongs to the question
-                if (comment.id === req.params.answer_id) {
+                comment.getAnswer(function(err, answer) {
+                	if(!err && answer.id == req.params.answer_id) {
+	                    // update the content
+	                    comment.content = req.body.content;
 
-                    // update the content
-                    comment.content = req.body.content;
-
-                    comment.save(function (err) {
-                        if (!err) {
-                            res.setHeader('Content-Type', 'application/json');
-                            res.end(JSON.stringify(comment));
-                        } else {
-                            //Assume it's because of bad syntax, could we try catch for specific errors?
-                            res.status(400).send("Could not update comment");
-                        }
-                    });
-                } else {
-                    res.status(404).send("Comment with this answer id was not found");
-                }
+	                    comment.save(function (err) {
+	                        if (!err) {
+	                            res.setHeader('Content-Type', 'application/json');
+	                            res.end(JSON.stringify(comment));
+	                        } else {
+	                            //Assume it's because of bad syntax, could we try catch for specific errors?
+	                            res.status(400).send("Could not update comment");
+	                        }
+	                    });
+					} else {
+						res.status(404).send("Comment with this answer id was not found");
+					}
+                });
             } else {
                 res.status(404).send("Comment was not found");
             }
