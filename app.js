@@ -49,8 +49,7 @@ app.use(orm.express("sqlite://test.db",
                     date_posted : Date
                 }, {
                 });
-				
-			db.models.answer.hasOne("question", db.models.question, { reverse: 'answers' });	
+            db.models.answer.hasOne("question", db.models.question, { reverse: 'answers' });
 
             models.comments_question = db.define("comments_question",
                 {
@@ -74,17 +73,19 @@ app.use(orm.express("sqlite://test.db",
                 {
                     vote: Boolean
                 }, {
-            db.models.question_vote.hasOne("owner", db.models.user, { reverse: 'votes' });
-            db.models.question_vote.hasOne("question", db.models.question, { reverse: 'votes' });
+                });
+            db.models.question_vote.hasOne("owner", db.models.user, { reverse: 'user_question_votes' });
+            db.models.question_vote.hasOne("question", db.models.question, { reverse: 'question_votes' });
+
             models.answer_vote = db.define("answer_vote",
                 {
                     vote: Boolean
                 }, {
                 });
-            db.models.answer_vote.hasOne("owner", db.models.user, { reverse: 'votes' });
-            db.models.answer_vote.hasOne("question", db.models.question, { reverse: 'votes' });
+            db.models.answer_vote.hasOne("owner", db.models.user, { reverse: 'user_answer_votes' });
+            db.models.answer_vote.hasOne("question", db.models.answer, { reverse: 'answer_votes' });
 
-	    db.sync();
+            db.sync();
         }
     }));
 /*
@@ -93,12 +94,39 @@ AUTHENTICATION CODE
 
 */
 
-function verifyUser(user, password) {
-    var result = false;
-    if (password === user.password) {
-        result = true;
+function verifyUser(req, res) {
+    var userid = null,
+        result = false,
+        user = req.models.user.one(
+            {email: req.body.email},
+            {},
+            function (err, user) {
+                console.log(user);
+                if (err || !user || user.length === 0) {
+                    console.log("User does not exist");
+                    res.status(401).send("User does not exist");
+                    res.end();
+                } else {
+                    if (req.body.password !== user.password) {
+                        console.log("User unauthorised");
+                        res.status(401).send("Not Authorised");
+                    } else {
+                        return user.id;
+                    }
+                }
+            }
+        );
+    if (user) {
+        result = user.id;
+        console.log("userid: " + user.id);
+        return result;
+    }
+    else {
+        console.log("user does not exist - 2");
+        return null;
     }
 }
+
 
 app.listen(8888);
 //console.log("verifyuser: " + verifyUser(2, "test"));
@@ -165,8 +193,6 @@ app.get('/users/:user_id/questions', function (req, res) {
 
 //PUT updates user
 app.put('/users/:user_id', function (req, res) {
-
-
     req.assert('firstname', 'A First Name is required').notEmpty();
     req.assert('lastname', 'A Last Name is required').notEmpty();
     req.assert('email', 'An email address is required').notEmpty();
@@ -239,7 +265,7 @@ app.post("/users", function (req, res) {
 });
 
 //DELETE - destroy User
-app.delete('/users/:user_id', function (req, res) {
+app.del('/users/:user_id', function (req, res) {
     req.models.user.get(req.params.user_id, function (err, user) {
         if (!err) {
             user.remove(function (err) {
@@ -341,29 +367,45 @@ app.post("/questions", function (req, res) {
     req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
     req.assert('title', 'Title is required').notEmpty();
     req.assert('title', 'Tile has to be between 10 and 50 chars').len(10, 50);
+    req.assert('email', 'User email is required').notEmpty();
+    req.assert('email', 'A valid user email address is required').isEmail();
+    req.assert('password', 'A password is required').notEmpty();
 
     var datetime = new Date(),
-        errors = req.validationErrors();
+        errors = req.validationErrors(),
+        userid = null,
+        user = verifyUser(req, res);
+
+    if (!user) {
+        console.log("no user");
+        return;
+    }
 
     if (!errors) {
-        req.models.question.create(
-            [{
-                date_posted: datetime,
-                title: req.body.title,
-                content: req.body.content,
-                owner_id: 2
-            } ],
-            function (err, question_created) {
-                if (!err) {
-                    var question = question_created[0];
-                    res.setHeader('Content-Type', 'application/json');
-                    res.end(JSON.stringify(question));
-                } else {
-                    res.status(500).send(err);
+        if (userid) {
+            req.models.question.create(
+                [{
+                    date_posted: datetime,
+                    title: req.body.title,
+                    content: req.body.content,
+                    owner_id: 2
+                } ],
+                function (err, question_created) {
+                    if (!err) {
+                        var question = question_created[0];
+                        res.setHeader('Content-Type', 'application/json');
+                        res.end(JSON.stringify(question));
+                    } else {
+                        res.status(500).send(err);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            console.log("no userid");
+            return;
+        }
     } else {
+        console.log(errors);
         res.status(400).send(errors);
     }
 });
@@ -371,7 +413,7 @@ app.post("/questions", function (req, res) {
 
 
 //DELETE - destroy Question
-app.delete('/questions/:question_id', function (req, res) {
+app.del('/questions/:question_id', function (req, res) {
     req.models.question.get(req.params.question_id, function (err, question) {
         if (!err) {
             question.remove(function (err) {
@@ -523,7 +565,7 @@ app.post("/questions/comments/:question_id", function (req, res) {
 });
 
 //DELETE - destroy comment
-app.delete('/questions/:question_id/:comment_id', function (req, res) {
+app.del('/questions/:question_id/:comment_id', function (req, res) {
     req.models.comments_question.get(req.params.comment_id, function (err, comment) {
         if (!err) {
             comment.remove(function (err) {
@@ -617,20 +659,19 @@ app.post("/answers", function (req, res) {
 
     req.assert('content', 'Content is required').notEmpty();
     req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
-	// NICK: CHECK THIS. We need to assign the question number... I'm on a plane so obviously
-	// can't check it myself.
-	req.assert('question_id', 'Question ID is required').notEmpty();
+    // NICK: CHECK THIS. We need to assign the question number... I'm on a plane so obviously
+    // can't check it myself.
+    req.assert('question_id', 'Question ID is required').notEmpty();
 
-    var datetime = new Date(),
-        errors = req.validationErrors();
+    var datetime = new Date(), errors = req.validationErrors();
 
     if (!errors) {
-		req.models.question.get(req.body.question_id, function (err, question) {
-	        if (err) {
-	            res.status(404).send('Question ID not found');
-	        }
-    	});
-		
+        req.models.question.get(req.body.question_id, function (err, question) {
+            if (err) {
+                res.status(404).send('Question ID not found');
+            }
+        });
+
         req.models.answer.create(
             [{
                 date_posted: datetime,
@@ -657,7 +698,7 @@ app.post("/answers", function (req, res) {
 
 
 //DELETE - destroy Answer
-app.delete('/answers/:answer_id', function (req, res) {
+app.del('/answers/:answer_id', function (req, res) {
     req.models.answer.get(req.params.answer_id, function (err, answer) {
         if (!err) {
             answer.remove(function (err) {
@@ -812,7 +853,7 @@ app.post("/answers/comments/:answer_id", function (req, res) {
 });
 
 //DELETE - destroy comment
-app.delete('/answers/comments/:answer_id/:comment_id', function (req, res) {
+app.del('/answers/comments/:answer_id/:comment_id', function (req, res) {
     req.models.comments_answer.get(req.params.comment_id, function (err, comment) {
         if (!err) {
             comment.remove(function (err) {
@@ -833,7 +874,16 @@ app.delete('/answers/comments/:answer_id/:comment_id', function (req, res) {
 GET ALL QUESTION DETAIL
 
 */
-function getQuestionData(req, id) {
+
+function commentErrors(answer, err, comments) {
+    if (!err) {
+        answer.comments = comments;
+    } else {
+        answer.comments = [];
+    }
+}
+
+function getQuestionData(req, res) {
     req.models.question.get(req.params.question_id, function (err, question) {
         if (!err) {
             res.setHeader('Content-Type', 'application/json');
@@ -842,46 +892,35 @@ function getQuestionData(req, id) {
             res.status(404).send('Not found');
         }
     });
-	
-	
-	req.models.questions.get(id, function(err, question) {
-		if(!err) {
-			// we have the question, check for comments on the question
-			question.getComments(function(err, comments) {
-				if(!err) {
-					question.comments = comments;
-				}
-				else {
-					question.comments = [];
-				}
-			});
-			
-			question.getAnswers(function(err, answers) {
-				if(!err) {
-					question.answers = answers;
-				}
-				else {
-					question.answers = [];
-				}
-				
-				for(i = 0; i < question.answers.length; i++) {
-					var answer = question.answers[i];
-					
-					answer.getComments(function(err, comments) {
-						if(!err) {
-							answer.comments = comments;
-						}
-						else { 
-							answer.comments = [];
-						}
-					});
-				}
-			});
-		}
-		else {
-			return null;
-		}
-	});
+
+    req.models.questions.get(req.params.question_id, function (err, question) {
+        var i = 0;
+        if (!err) {
+            // we have the question, check for comments on the question
+            question.getComments(function (err, comments) {
+                if (!err) {
+                    question.comments = comments;
+                } else {
+                    question.comments = [];
+                }
+            });
+
+            question.getAnswers(function (err, answers) {
+                if (!err) {
+                    question.answers = answers;
+                } else {
+                    question.answers = [];
+                }
+
+                for (i = 0; i < question.answers.length; i = i + 1) {
+                    var answer = question.answers[i], comments = null;
+                    answer.getComments(commentErrors(answer, err, comments));
+                }
+            });
+        } else {
+            return null;
+        }
+    });
 }
 
 
