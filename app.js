@@ -94,7 +94,7 @@ AUTHENTICATION CODE
 
 */
 
-function verifyUser(req, res, next) {
+function verifyUser(req, next) {
 	req.models.user.one(
         {email: req.body.email},
         {},
@@ -110,6 +110,8 @@ function verifyUser(req, res, next) {
             }
         }
     );
+	
+	return;
 }
 
 
@@ -359,9 +361,9 @@ app.post("/questions", function (req, res) {
     var datetime = new Date(),
         errors = req.validationErrors();
 		
-	verifyUser(req, res, function(user) {
+	verifyUser(req, function(user) {
 	    if (!user) {
-	        res.status(401).send(err);
+	        res.status(401).send("Invalid user");
 	    }
 		else {
 			console.log(user);
