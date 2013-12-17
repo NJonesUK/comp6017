@@ -618,20 +618,20 @@ describe('Answers', function () {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'test answer', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    answerID =  body.id;
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
 
-                    body.content.should.equal('test answer');
-                    res.statusCode.should.equal(200);
-                    done();
-                }
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                    done();
+	                }
+	            });
             });
         });
 
@@ -648,22 +648,22 @@ describe('Answers', function () {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'hello worl', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(200);
-                    var body = JSON.parse(res.body);
-                    request.del('http://127.0.0.1:8888/answers/' + body.id, function (err, res) {
-                        if (!err) {
-                            res.statusCode.should.equal(200);
-                        }
-                    });
-                    done();
-                }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'hello worl', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    res.statusCode.should.equal(200);
+	                    var body = JSON.parse(res.body);
+	                    request.del('http://127.0.0.1:8888/answers/' + body.id, function (err, res) {
+	                        if (!err) {
+	                            res.statusCode.should.equal(200);
+	                        }
+	                    });
+	                    done();
+	                }
+	            });
             });
         });
 
@@ -719,18 +719,30 @@ describe('Answers', function () {
 
 
         it('Should create a test answer', function (done) {
+			var questionID = null;
+			
             request.post({
-                url: 'http://127.0.0.1:8888/answers',
-                form: {content: 'test answer'}
+                url: 'http://127.0.0.1:8888/questions',
+                form: {content: 'testing question', title: 'ThisTitleIsBiggerThan10Chars'}
             }, function (err, res) {
                 if (!err) {
                     var body = JSON.parse(res.body);
-                    answerID =  body.id;
-
-                    body.content.should.equal('test answer');
-                    res.statusCode.should.equal(200);
-                    done();
+                    questionID = body.id;
                 }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers',
+	                form: {content: 'test answer', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    answerID =  body.id;
+
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                    done();
+	                }
+	            });
             });
         });
 		
@@ -740,7 +752,7 @@ describe('Answers', function () {
                 form: {content: 'test1234567890'}
             }, function (err, res) {
                 if (!err) {
-                    res.statusCode.should.equal(404);
+                    res.statusCode.should.equal(400);
                     done();
                 }
             });
@@ -866,16 +878,6 @@ describe('Question comments', function () {
     describe('Correct Tests', function () {
         var _commentID = null;
 		var _questionID = null;
-		
-        it('Should get all the comments', function (done) {
-            request('http://127.0.0.1:8888/questions/comments', function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(200);
-                    done();
-                }
-            });
-        });
-
 
         it('Should create a test comment', function (done) {
 			var questionID = null;
@@ -889,20 +891,20 @@ describe('Question comments', function () {
                     questionID = body.id;
 					_questionID = body.id;
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/questions/comments/',
-                form: {content: 'test comment', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    _commentID =  body.id;
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/',
+	                form: {content: 'test comment', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    _commentID =  body.id;
 
-                    body.content.should.equal('test answer');
-                    res.statusCode.should.equal(200);
-                    done();
-                }
+	                    body.content.should.equal('test answer');
+	                    res.statusCode.should.equal(200);
+	                    done();
+	                }
+	            });
             });
         });
 
@@ -919,22 +921,22 @@ describe('Question comments', function () {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/questions/comments/',
-                form: {content: 'hello worl', 'question_id': questionID}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(200);
-                    var body = JSON.parse(res.body);
-                    request.del('http://127.0.0.1:8888/questions/' + questionID + '/'+ body.id, function (err, res) {
-                        if (!err) {
-                            res.statusCode.should.equal(200);
-                        }
-                    });
-                    done();
-                }
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/questions/comments/',
+	                form: {content: 'hello worl', 'question_id': questionID}
+	            }, function (err, res) {
+	                if (!err) {
+	                    res.statusCode.should.equal(200);
+	                    var body = JSON.parse(res.body);
+	                    request.del('http://127.0.0.1:8888/questions/' + questionID + '/'+ body.id, function (err, res) {
+	                        if (!err) {
+	                            res.statusCode.should.equal(200);
+	                        }
+	                    });
+	                    done();
+	                }
+	            });
             });
         });
 
@@ -1149,16 +1151,6 @@ describe('Answer comments', function () {
         var _commentID = null;
 		var _questionID = null;
 		var _answerID = null;
-		
-        it('Should get all the comments', function (done) {
-            request('http://127.0.0.1:8888/answers/comments', function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(200);
-                    done();
-                }
-            });
-        });
-
 
         it('Should create a test comment', function (done) {
 			var questionID = null;
@@ -1329,20 +1321,20 @@ describe('Answer comments', function () {
                     body.content.should.equal('test answer');
                     res.statusCode.should.equal(200);
                 }
-            });
-			
-            request.post({
-                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
-                form: {content: 'test comment'}
-            }, function (err, res) {
-                if (!err) {
-                    var body = JSON.parse(res.body);
-                    _commentID =  body.id;
+				
+	            request.post({
+	                url: 'http://127.0.0.1:8888/answers/comments/'+ answerID,
+	                form: {content: 'test comment'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    var body = JSON.parse(res.body);
+	                    _commentID =  body.id;
 
-                    body.content.should.equal('test comment');
-                    res.statusCode.should.equal(200);
-                    done();
-                }
+	                    body.content.should.equal('test comment');
+	                    res.statusCode.should.equal(200);
+	                    done();
+	                }
+	            });
             });
         });
 
@@ -1393,16 +1385,16 @@ describe('Answer comments', function () {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.put({
-                url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
-                form: {content: ''}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(400);
-                    done();
-                }
+				
+	            request.put({
+	                url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
+	                form: {content: ''}
+	            }, function (err, res) {
+	                if (!err) {
+	                    res.statusCode.should.equal(400);
+	                    done();
+	                }
+	            });
             });
         });
 
@@ -1417,16 +1409,16 @@ describe('Answer comments', function () {
                     var body = JSON.parse(res.body);
                     questionID = body.id;
                 }
-            });
-			
-            request.put({
-                 url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
-                form: {content: 'hello wor'}
-            }, function (err, res) {
-                if (!err) {
-                    res.statusCode.should.equal(400);
-                    done();
-                }
+				
+	            request.put({
+	                 url: 'http://127.0.0.1:8888/questions/comments/' + questionID,
+	                form: {content: 'hello wor'}
+	            }, function (err, res) {
+	                if (!err) {
+	                    res.statusCode.should.equal(400);
+	                    done();
+	                }
+	            });
             });
         });
 
