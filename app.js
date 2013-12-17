@@ -15,10 +15,6 @@ app.use(orm.express("sqlite://test.db",
     {
         define: function (db, models, next) {
             db.load("./models", function (err) {
-                //Can't get this way working, so i've declared it inline. 
-                if (!err) {
-                    console.log("not an error!");
-                }
                 next();
             });
 
@@ -58,13 +54,27 @@ app.use(orm.express("sqlite://test.db",
 
         }
     }));
+	
+/*
+
+AUTHENTICATION CODE
+
+*/
+
+function verifyUser (user, password) {
+	if (password == user.password)
+	{
+		var result = true;
+	}
+	else
+	{
+		var result = false;
+	}
+}
 
 app.listen(8888);
+//console.log("verifyuser: " + verifyUser(2, "test"));
 console.log("Server running at http://127.0.0.1:8888/");
-
-
-
-
 
 
 
@@ -104,6 +114,7 @@ app.get('/users/:user_id', function (req, res) {
     });
 });
 
+//GET - get all of a given user's questions
 app.get('/users/:user_id/questions', function (req, res) {
     req.models.user.get(req.params.user_id, function (err, user) {
         if (!err) {
