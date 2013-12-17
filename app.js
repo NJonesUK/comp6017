@@ -94,37 +94,22 @@ AUTHENTICATION CODE
 
 */
 
-function verifyUser(req, res) {
-    var userid = null,
-        result = false,
-        user = req.models.user.one(
-            {email: req.body.email},
-            {},
-            function (err, user) {
-                console.log(user);
-                if (err || !user || user.length === 0) {
-                    console.log("User does not exist");
-                    res.status(401).send("User does not exist");
-                    res.end();
+function verifyUser(req, res, next) {
+	req.models.user.one(
+        {email: req.body.email},
+        {},
+        function (err, user) {
+            if (err || !user || user.length === 0) {
+                next(null);
+            } else {
+                if (req.body.password !== user.password) {
+                    next(null);
                 } else {
-                    if (req.body.password !== user.password) {
-                        console.log("User unauthorised");
-                        res.status(401).send("Not Authorised");
-                    } else {
-                        return user.id;
-                    }
+					next(user.id);
                 }
             }
-        );
-    if (user) {
-        result = user.id;
-        console.log("userid: " + user.id);
-        return result;
-    }
-    else {
-        console.log("user does not exist - 2");
-        return null;
-    }
+        }
+    );
 }
 
 
@@ -372,17 +357,17 @@ app.post("/questions", function (req, res) {
     req.assert('password', 'A password is required').notEmpty();
 
     var datetime = new Date(),
-        errors = req.validationErrors(),
-        userid = null,
-        user = verifyUser(req, res);
+        errors = req.validationErrors();
+		
+	verifyUser(req, res, function(user) {
+	    if (!user) {
+	        res.status(401).send(err);
+	    }
+		else {
+			console.log(user);
+		}
 
-    if (!user) {
-        console.log("no user");
-        return;
-    }
-
-    if (!errors) {
-        if (userid) {
+	    if (!errors) {
             req.models.question.create(
                 [{
                     date_posted: datetime,
@@ -400,14 +385,11 @@ app.post("/questions", function (req, res) {
                     }
                 }
             );
-        } else {
-            console.log("no userid");
-            return;
-        }
-    } else {
-        console.log(errors);
-        res.status(400).send(errors);
-    }
+	    } else {
+	        console.log(errors);
+	        res.status(400).send(errors);
+	    }
+	});
 });
 
 
