@@ -3,18 +3,21 @@
   "version": "0.1.0",
   "author": "Nick, Richard, Tom",
   "description": "COMP6017 Coursework",
-  "contributors": [ 
+  "contributors": [
     {
       "name": "Nick Jones",
       "email": "noj1g10@soton.ac.uk"
-    } 
+    }
   ],
   "dependencies" : {
     "express"   :  "*",
     "orm"       :  "*",
     "sqlite3"   :  "*",
-    "bcrypt"    :  "*",
-    "express-validator" : "*"
+    "express-validator" : "*",
+    "should" : "*",
+    "assert" : "*",
+    "request" : "*",
+    "mocha" : "*"
   },
   "scripts": {
     "start": "node ./app.js"
