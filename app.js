@@ -55,6 +55,8 @@ app.use(orm.express("sqlite://test.db",
                     date_posted : Date,
                 }, {
                 });
+				
+			db.models.answer.hasOne("question", db.models.question, { reverse: 'answers' });	
 
 			models.comments_question = db.define("comments_question",
 				{
@@ -75,6 +77,8 @@ app.use(orm.express("sqlite://test.db",
 				
 			db.models.comments_answer.hasOne("owner", db.models.user, { reverse: 'comments_answer' });
 			db.models.comments_answer.hasOne("answer", db.models.answer, { reverse: 'comments' });
+			
+			db.sync();
         }
     }));
 
@@ -599,17 +603,26 @@ app.post("/answers", function (req, res) {
 
     req.assert('content', 'Content is required').notEmpty();
     req.assert('content', 'Content has to be between 10 and 600 chars').len(10, 600);
+	// NICK: CHECK THIS. We need to assign the question number... I'm on a plane so obviously
+	// can't check it myself.
+	req.assert('question_id', 'Question ID is required').notEmpty();
 
     var datetime = new Date(),
         errors = req.validationErrors();
 
     if (!errors) {
+		req.models.question.get(req.body.question_id, function (err, question) {
+	        if (err) {
+	            res.status(404).send('Question ID not found');
+	        }
+    	});
+		
         req.models.answer.create(
             [{
                 date_posted: datetime,
                 content: req.body.content,
                 owner_id: null,
-                question_id: null
+                question_id: req.body.question_id
             }, ],
             function (err, answer_created) {
                 if (!err) {
@@ -804,6 +817,61 @@ app.delete('/answers/comments/:answer_id/:comment_id', function (req, res) {
     });
 });
 
+/* 
+
+GET ALL QUESTION DETAIL
+
+*/
+function getQuestionData(req, id) {
+    req.models.question.get(req.params.question_id, function (err, question) {
+        if (!err) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(question));
+        } else {
+            res.status(404).send('Not found');
+        }
+    });
+	
+	
+	req.models.questions.get(id, function(err, question) {
+		if(!err) {
+			// we have the question, check for comments on the question
+			question.getComments(function(err, comments) {
+				if(!err) {
+					question.comments = comments;
+				}
+				else {
+					question.comments = [];
+				}
+			});
+			
+			question.getAnswers(function(err, answers) {
+				if(!err) {
+					question.answers = answers;
+				}
+				else {
+					question.answers = [];
+				}
+				
+				for(i = 0; i < question.answers.length; i++) {
+					var answer = question.answers[i];
+					
+					answer.getComments(function(err, comments) {
+						if(!err) {
+							answer.comments = comments;
+						}
+						else { 
+							answer.comments = [];
+						}
+					});
+				}
+			});
+		}
+		else {
+			return null;
+		}
+	});
+}
 
 
 /*
@@ -811,8 +879,6 @@ app.delete('/answers/comments/:answer_id/:comment_id', function (req, res) {
 TEST CODE
 
 */
-
-
 
 
 app.get("/test", function (res) {
